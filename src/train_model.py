@@ -2,6 +2,8 @@
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import numpy as np
+import torch
+import torch.nn as nn
 
 def normalize(data):
         if(data.all() == 0):
@@ -24,6 +26,12 @@ def forward_propagation(x, parameters):
     w, b = parameters['w'], parameters['b']
     yhat = np.matmul(x, w) + b
     return yhat
+
+def calculate_cost(yhat, y):
+    m = y.shape[0]
+    error = (yhat - y) ** 2
+    cost = np.sum(error, 0)/m
+    return cost
 
 
 if __name__ == '__main__':

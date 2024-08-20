@@ -4,9 +4,12 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-import sys
-sys.path.insert(0, 'C:/Users/Lorenzo/Desktop/Workspace/Github/Project-1/src')
-from train_model import normalize, initialize_parameters, forward_propagation
+if True:
+    import sys
+    sys.path.insert(
+        0, 'C:/Users/Lorenzo/Desktop/Workspace/Github/Project-1/src')
+    from train_model import normalize, initialize_parameters, forward_propagation, calculate_cost
+
 
 class test_normalize(unittest.TestCase):
 
@@ -74,15 +77,32 @@ class test_initialize_parameters(unittest.TestCase):
 class test_forward_propagation(unittest.TestCase):
 
     def test_basic(self):
-        X = np.random.randn(30, 1)
-        parameters = initialize_parameters()
-        w, b = parameters['w'], parameters['b']
+        x = np.random.rand(30, 1)
+        w = np.random.rand(1, 1) * 0.1
+        b = np.zeros((1, 1))
+        parameters = {'w': w, 'b': b}
+        result = forward_propagation(x, parameters)
+
         linear = nn.Linear(1, 1)
         linear.weight.data = torch.tensor(w)
         linear.bias.data = torch.tensor(b)
-        expected = linear(torch.tensor(X)).detach().numpy()
-        result = forward_propagation(X, parameters)
+        expected = linear(torch.tensor(x)).detach().numpy()
+
         np.testing.assert_allclose(result, expected)
+
+
+class test_calculate_cost(unittest.TestCase):
+
+    def test_basic(self):
+        yhat = np.random.rand(30, 1)
+        y = np.random.rand(30, 1)
+        result = calculate_cost(yhat, y)
+
+        loss = torch.nn.MSELoss()
+        expected = loss(torch.tensor(yhat), torch.tensor(y)).detach().numpy()
+        np.testing.assert_allclose(result, expected)
+
+
 
 
 unittest.main()
