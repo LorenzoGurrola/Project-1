@@ -1,7 +1,7 @@
 import unittest
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
-from train_model import normalize, initialize_parameters, forward_propagation
+from src.train_model import normalize, initialize_parameters, forward_propagation
 import torch
 import torch.nn as nn
 
