@@ -20,9 +20,9 @@ def initialize_parameters():
     parameters = {'w':w, 'b':b}
     return parameters
 
-def forward_propagation(X, parameters):
+def forward_propagation(x, parameters):
     w, b = parameters['w'], parameters['b']
-    yhat = X * w + b
+    yhat = np.matmul(x, w) + b
     return yhat
 
 
