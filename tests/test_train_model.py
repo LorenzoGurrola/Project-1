@@ -8,7 +8,7 @@ if True:
     import sys
     sys.path.insert(
         0, 'C:/Users/Lorenzo/Desktop/Workspace/Github/Project-1/src')
-    from train_model import normalize, initialize_parameters, forward_propagation, calculate_cost, back_propagation
+    from train_model import normalize, initialize_parameters, forward_propagation, calculate_cost, back_propagation, update_parameters
 
 
 class test_normalize(unittest.TestCase):
@@ -127,6 +127,19 @@ class test_forward_and_backward_pass(unittest.TestCase):
         np.testing.assert_allclose(dw_result, dw_expected)
         np.testing.assert_allclose(db_result, db_expected)
 
+class test_update_parameters(unittest.TestCase):
 
+    def test_basic(self):
+        parameters = {'w':np.array([0.1]),'b':np.array([0])}
+        grads = {'dw':np.array([-0.1]), 'db':np.array([0.1])}
+        learning_rate = 0.1
+        parameters = update_parameters(parameters, grads, learning_rate)
+        w_result = parameters['w']
+        b_result = parameters['b']
+        w_expected = np.array([0.11])
+        b_expected = np.array([-0.01])
+
+        np.testing.assert_allclose(w_result, w_expected)
+        np.testing.assert_allclose(b_result, b_expected)
 
 unittest.main()

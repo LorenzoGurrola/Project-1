@@ -25,6 +25,7 @@ def initialize_parameters():
 def forward_propagation(x, parameters):
     w, b = parameters['w'], parameters['b']
     yhat = np.matmul(x, w) + b
+    yhat = np.reshape(yhat, (yhat.shape[0], 1))
     return yhat
 
 def calculate_cost(yhat, y):
@@ -38,11 +39,20 @@ def calculate_cost(yhat, y):
 def back_propagation(x, intermediate_values):
     m = x.shape[0]
     error = intermediate_values['error']
-
     dw = x * (2 * error) * (1/m)
+    dw = np.sum(dw, axis=0, keepdims=True)
     db = (2 * error) * (1/m)
+    db = np.sum(db, axis=0, keepdims=True)
     grads = {'dw':dw, 'db':db}
     return grads
+
+def update_parameters(parameters, grads, learning_rate=0.1):
+    w, b = parameters['w'], parameters['b']
+    dw, db = grads['dw'], grads['db']
+    w = w - learning_rate * dw
+    b = b - learning_rate * db
+    parameters = {'w':w, 'b':b}
+    return parameters
 
 
 if __name__ == '__main__':
