@@ -8,7 +8,7 @@ if True:
     import sys
     sys.path.insert(
         0, 'C:/Users/Lorenzo/Desktop/Workspace/Github/Project-1/src')
-    from train_model import normalize, initialize_parameters, forward_propagation, calculate_cost
+    from train_model import normalize, initialize_parameters, forward_propagation, calculate_cost, back_propagation
 
 
 class test_normalize(unittest.TestCase):
@@ -96,12 +96,36 @@ class test_calculate_cost(unittest.TestCase):
     def test_basic(self):
         yhat = np.random.rand(30, 1)
         y = np.random.rand(30, 1)
-        result = calculate_cost(yhat, y)
+        result, intermediate_values = calculate_cost(yhat, y)
 
         loss = torch.nn.MSELoss()
         expected = loss(torch.tensor(yhat), torch.tensor(y)).detach().numpy()
         np.testing.assert_allclose(result, expected)
 
+class test_forward_and_backward_pass(unittest.TestCase):
+
+    def test_basic(self):
+        m = 30
+        x = np.random.randn(m,1)
+        y = np.random.rand(m, 1)
+        parameters = initialize_parameters()
+        yhat = forward_propagation(x, parameters)
+        cost, intermediate_values = calculate_cost(yhat, y)
+        grads = back_propagation(x, intermediate_values)
+        dw_result = grads['dw']
+        db_result = grads['db']
+
+        x = torch.tensor(x)
+        y = torch.tensor(y)
+        w, b = torch.tensor(parameters['w'], requires_grad=True), torch.tensor(parameters['b'], requires_grad=True)
+        yhat = x@w + b
+        cost = torch.sum((yhat - y) ** 2, dim=0, keepdim=True)/m
+        cost.backward()
+        dw_expected = w.grad.detach().numpy()
+        db_expected = b.grad.detach().numpy()
+        
+        np.testing.assert_allclose(dw_result, dw_expected)
+        np.testing.assert_allclose(db_result, db_expected)
 
 
 

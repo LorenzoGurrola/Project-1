@@ -29,9 +29,20 @@ def forward_propagation(x, parameters):
 
 def calculate_cost(yhat, y):
     m = y.shape[0]
-    error = (yhat - y) ** 2
-    cost = np.sum(error, 0)/m
-    return cost
+    error = yhat - y
+    squared_error = error ** 2
+    cost = np.sum(squared_error, 0)/m
+    intermediate_values = {'error':error}
+    return cost, intermediate_values
+
+def back_propagation(x, intermediate_values):
+    m = x.shape[0]
+    error = intermediate_values['error']
+
+    dw = x * (2 * error) * (1/m)
+    db = (2 * error) * (1/m)
+    grads = {'dw':dw, 'db':db}
+    return grads
 
 
 if __name__ == '__main__':
